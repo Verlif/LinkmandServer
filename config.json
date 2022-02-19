@@ -1,0 +1,14 @@
+{
+  "port" : 16508,
+  "max" : 2,
+  "tied" : 1,
+  "paths" : [ ],
+  "fileFilter" : {
+    "exclude" : [ ".*beta.*" ],
+    "include" : [ ".*command.*" ]
+  },
+  "allowedNames" : [ ],
+  "blockedNames" : [ ],
+  "allowedIps" : [ ],
+  "blockedIps" : [ ]
+}
