@@ -1,8 +1,10 @@
 package idea.verlif.linkmand.server.server;
 
+import idea.verlif.linkmand.server.key.ChatKey;
 import idea.verlif.linkmand.server.key.CloseKey;
 import idea.verlif.linkmand.server.key.ConnectKey;
 import idea.verlif.linkmand.server.key.NameKey;
+import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.server.KeyServer;
 import idea.verlif.socket.command.server.handle.InputMessageHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
@@ -27,9 +29,9 @@ public class LinkServer extends KeyServer {
         parser.setMessageHandler(new InputMessageHandler() {
             @Override
             public String preHandle(ClientHolder.ClientHandler clientHandler, String s) {
-                String[] ss = s.split(" ", 3);
+                String[] ss = s.split(SocketCommand.SPLIT, 3);
                 if (ss.length > 1 && config.allowedName(ss[1])) {
-                    return ss[0] + " " + (ss.length == 3 ? ss[2] : "");
+                    return ss[0] + SocketCommand.SPLIT + (ss.length == 3 ? ss[2] : "");
                 }
                 clientHandler.sendMessage("NO PERMISSION!");
                 try {
@@ -61,7 +63,7 @@ public class LinkServer extends KeyServer {
                     } catch (IOException ignored) {
                     }
                 } else {
-                    String name = s.split(" ", 2)[0];
+                    String name = s.split(SocketCommand.SPLIT, 2)[0];
                     ClientHolder.ClientHandler handler = handlerMap.get(name);
                     if (handler != null) {
                         try {
@@ -85,6 +87,7 @@ public class LinkServer extends KeyServer {
         addKeyCommand(nameKey);
         addKeyCommand(new ConnectKey());
         addKeyCommand(new CloseKey());
+        addKeyCommand(new ChatKey(this));
 
         super.init();
         addOnConnectedHandler(clientHandler -> clientHandler.sendMessage(nameKey.buildKey()));
@@ -125,7 +128,7 @@ public class LinkServer extends KeyServer {
         synchronized (handlerMap) {
             Set<String> set = new HashSet<>(handlerMap.keySet());
             for (String key : set) {
-                ClientHolder.ClientHandler handler = getHandler(key);
+                ClientHolder.ClientHandler handler = handlerMap.get(key);
                 if (handler == null || handler.getClient().isClosed()) {
                     handlerMap.remove(key);
                 }

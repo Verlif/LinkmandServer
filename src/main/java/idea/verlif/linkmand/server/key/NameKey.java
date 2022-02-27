@@ -1,5 +1,6 @@
 package idea.verlif.linkmand.server.key;
 
+import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.key.KeyCommand;
 import idea.verlif.socket.core.client.Client;
 import idea.verlif.socket.core.server.holder.ClientHolder;
@@ -33,6 +34,6 @@ public class NameKey implements KeyCommand {
 
     @Override
     public void receiveOnClient(Client client, String s) {
-        client.sendMessage(this.buildKey() + " " + name);
+        client.sendMessage(this.buildKey() + SocketCommand.SPLIT + name);
     }
 }
